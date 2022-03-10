@@ -1,0 +1,60 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        if: |
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ', '), '#skip')
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "fs-open-anecdotes"
+          heroku_email: "t-kemppainen@outlook.com"
+          healthcheck: "https://fs-open-anecdotes.herokuapp.com/health"
+          checkstring: "ok"
+          delay: 5
+          rollbackonhealthcheckfailed: true
+      - name: npm install
+        run: npm install
+      - name: lint
+        run: npm run eslint
+      - uses: actions/checkout@v2
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.33.0
+        if: |
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ', '), '#skip')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: 'patch'
+      - uses: 8398a7/action-slack@v3
+        if: |
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ', '), '#skip') &&
+          always()
+        with:
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `a new version deployed to https://fs-open-anecdotes.herokuapp.com/ (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -12,10 +12,10 @@ const Notification = (props) => {
   return (
     <div>
       {props.notification.message !== '' ?
-      <div style={style}>
-        {props.notification.message}
-      </div>
-      : ''}
+        <div style={style}>
+          {props.notification.message}
+        </div>
+        : ''}
     </div>
   )
 }
