@@ -1,9 +1,13 @@
 const express = require('express')
 const app = express()
 
+const jsonServer = require('json-server')
+const router = jsonServer.router('db.json')
+
 const PORT = process.env.PORT || 5001
 
 app.use(express.static('build'))
+app.use('/anecdotes', router)
 
 app.get('/health', (req, res) => {
   res.send('ok')

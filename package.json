@@ -20,12 +20,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-prod": "npm start && npm run prod-json-server",
+    "start-prod": "npm run build --prod && node app.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json",
-    "prod-json-server": "node server.js",
     "eslint": "eslint './**/*.{js,jsx}'"
   },
   "eslintConfig": {
