@@ -17,6 +17,10 @@ app.get('/version', (req, res) => {
   res.send('1')
 })
 
+app.use((req, res, next) => {
+  next()
+})
+
 app.use('/anecdotes', router)
 
 app.listen(PORT, () => {
