@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'https://fs-open-anecdotes.herokuapp.com'
+const baseUrl = 'https://fs-open-anecdotes.herokuapp.com/anecdotes'
 
 const getAll = async () => {
   const response = await axios.get(baseUrl)

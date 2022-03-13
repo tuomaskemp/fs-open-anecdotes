@@ -7,7 +7,6 @@ const router = jsonServer.router('db.json')
 const PORT = process.env.PORT || 5001
 
 app.use(express.static('build'))
-app.use('/anecdotes', router)
 
 app.get('/health', (req, res) => {
   res.send('ok')
@@ -16,6 +15,8 @@ app.get('/health', (req, res) => {
 app.get('/version', (req, res) => {
   res.send('1')
 })
+
+app.use('/anecdotes', router)
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
