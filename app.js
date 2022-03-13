@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
+const path = require('path')
 
 const jsonServer = require('json-server')
-const router = jsonServer.router('db.json')
+const router = jsonServer.router(path.join(__dirname, 'db.json'))
 
 const PORT = process.env.PORT || 5001
 
