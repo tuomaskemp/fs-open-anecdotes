@@ -7,7 +7,7 @@ const router = jsonServer.router(path.join(__dirname, 'db.json'))
 
 const PORT = process.env.PORT || 5001
 
-app.use('/anecdotes', router)
+app.use(router)
 app.use(express.static('build'))
 
 app.get('/health', (req, res) => {
